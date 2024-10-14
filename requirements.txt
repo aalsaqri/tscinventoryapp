@@ -9,3 +9,4 @@ psycopg2-binary==2.9.6  # PostgreSQL driver for Heroku
 Flask-Bcrypt==1.0.1  # Optional: For secure password hashing
 python-dotenv==1.0.0  # Optional: For .env configuration management
 pytz==2023.3  # For timezone support
+Werkzeug==2.3.6
