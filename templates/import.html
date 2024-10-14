@@ -1,0 +1,39 @@
+<!-- templates/import.html -->
+{% extends "base.html" %}
+
+{% block title %}Import Items - Stock Order Calculator{% endblock %}
+
+{% block content %}
+    <h1 class="text-center mb-4">Import Items from CSV</h1>
+
+    <div class="card">
+        <div class="card-header">
+            Upload CSV File
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.file.label(class="form-label") }}
+                    {{ form.file(class="form-control") }}
+                    {% for error in form.file.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="d-grid gap-2">
+                    {{ form.submit(class="btn btn-primary btn-lg") }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h5>CSV File Format:</h5>
+        <p>The CSV file should have the following headers:</p>
+        <pre>
+name,par
+Item D,120
+Item E,180
+        </pre>
+    </div>
+{% endblock %}

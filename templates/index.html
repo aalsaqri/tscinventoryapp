@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Stock Order Calculator{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Stock Order Calculator</h1>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Stock Input Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            Enter Current Stock Levels
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="row">
+                    {% for item in items %}
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ item.name }}" class="form-label">
+                                {{ item.name }} (PAR: {{ item.par }})
+                            </label>
+                            <input 
+                                type="number" 
+                                class="form-control" 
+                                id="{{ item.name }}" 
+                                name="{{ item.name }}" 
+                                min="0" 
+                                value="{{ request.form[item.name] if request.method == 'POST' else '' }}" 
+                                required
+                            >
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100">Submit Stock Levels</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Links to History and Downloads -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('history') }}" class="btn btn-secondary mx-2">View Submission History</a>
+        <a href="{{ url_for('downloads') }}" class="btn btn-secondary mx-2">Download Submission History</a>
+    </div>
+</div>
+{% endblock %}
