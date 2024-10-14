@@ -1,11 +1,9 @@
-# config.py
-
 import os
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL').replace(
-        'postgres://', 'postgresql://', 1  # Ensure compatibility with SQLAlchemy
+    # Provide a default SQLite database URI for local development if DATABASE_URL is not set
+    SQLALCHEMY_DATABASE_URI = (
+        os.getenv('DATABASE_URL', 'sqlite:///local.db').replace('postgres://', 'postgresql://', 1)
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB upload limit
+    SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key')
