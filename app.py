@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config.from_object('config.Config')
 
 # Initialize extensions
-db.init_app(app)
+db.SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 # Configure Flask-Login
@@ -206,6 +206,12 @@ def logout():
     logout_user()
     flash('You have been logged out.', 'success')
     return redirect(url_for('login'))
+    
+@app.cli.command("db")
+@with_appcontext
+def db_commands():
+    """Registers db commands."""
+    click.echo("DB command registered")
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
