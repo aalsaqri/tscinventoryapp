@@ -38,7 +38,6 @@ def load_user(user_id):
 # Routes
 
 @app.route('/', methods=['GET', 'POST'])
-@login_required
 def index():
     items = Item.query.all()
     if request.method == 'POST':
