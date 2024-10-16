@@ -54,15 +54,15 @@ def index():
                     if stock < 0:
                         raise ValueError(f"Negative stock for {item.name}.")
 
-                    # Create a new StockRecord and add to the database
-                    stock_record = StockRecord(item_id=item.id, current_stock=stock, item.par=par, timestamp=datetime.utcnow())
+                    # Create a new StockRecord and add it to the database
+                    stock_record = StockRecord(item_id=item.id, current_stock=stock, timestamp=datetime.utcnow())
                     db.session.add(stock_record)
 
-                    # Calculate the difference between PAR and stock level
+                    # Calculate the PAR difference (PAR - Stock)
                     par_difference = item.par - stock
 
-                    # Add row data: item name, stock level, par_level, PAR difference
-                    submission_data.append([item.name, stock, par, par_difference])
+                    # Add row data: Item Name, Stock Quantity, PAR, PAR Difference
+                    submission_data.append([item.name, stock, item.par, par_difference])
 
             # Commit the changes to the database
             db.session.commit()
@@ -76,7 +76,7 @@ def index():
             with open(csv_file_path, mode='w', newline='') as file:
                 writer = csv.writer(file)
                 # Write the header row
-                writer.writerow(['Item Name', 'Stock Quantity', 'Par Level', 'Order Quantity'])
+                writer.writerow(['Item Name', 'Stock Quantity', 'PAR', 'PAR Difference'])
                 # Write the data rows
                 writer.writerows(submission_data)
 
