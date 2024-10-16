@@ -61,8 +61,8 @@ def index():
                     # Calculate the difference between PAR and stock level
                     par_difference = item.par - stock
 
-                    # Add row data: item name, stock level, PAR difference
-                    submission_data.append([item.name, stock, par_difference])
+                    # Add row data: item name, stock level, par_level, PAR difference
+                    submission_data.append([item.name, stock, par, par_difference])
 
             # Commit the changes to the database
             db.session.commit()
