@@ -55,7 +55,7 @@ def index():
                         raise ValueError(f"Negative stock for {item.name}.")
 
                     # Create a new StockRecord and add to the database
-                    stock_record = StockRecord(item_id=item.id, current_stock=stock, timestamp=datetime.utcnow())
+                    stock_record = StockRecord(item_id=item.id, current_stock=stock, item.par=par, timestamp=datetime.utcnow())
                     db.session.add(stock_record)
 
                     # Calculate the difference between PAR and stock level
