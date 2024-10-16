@@ -76,7 +76,7 @@ def index():
             with open(csv_file_path, mode='w', newline='') as file:
                 writer = csv.writer(file)
                 # Write the header row
-                writer.writerow(['Item Name', 'Stock Quantity', 'PAR Difference'])
+                writer.writerow(['Item Name', 'Stock Quantity', 'Par Level', 'Order Quantity'])
                 # Write the data rows
                 writer.writerows(submission_data)
 
