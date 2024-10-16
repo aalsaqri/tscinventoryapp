@@ -37,34 +37,56 @@ def load_user(user_id):
 
 # Routes
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     items = Item.query.all()
+
     if request.method == 'POST':
         try:
             submission_data = []
+
+            # Collect data for each item
             for item in items:
                 stock_input = request.form.get(item.name)
                 if stock_input is not None:
                     stock = int(stock_input)
                     if stock < 0:
                         raise ValueError(f"Negative stock for {item.name}.")
-                    stock_record = StockRecord(item_id=item.id, current_stock=stock)
+
+                    # Create a new StockRecord and add to the database
+                    stock_record = StockRecord(item_id=item.id, current_stock=stock, timestamp=datetime.utcnow())
                     db.session.add(stock_record)
-                    submission_data.append([item.name, stock, item.par])
+
+                    # Calculate the difference between PAR and stock level
+                    par_difference = item.par - stock
+
+                    # Add row data: item name, stock level, PAR difference
+                    submission_data.append([item.name, stock, par_difference])
+
+            # Commit the changes to the database
             db.session.commit()
+
+            # Generate the CSV filename with the current timestamp
             timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
             csv_filename = f"{timestamp}.csv"
             csv_file_path = os.path.join('downloads', csv_filename)
+
+            # Write the data to a CSV file
             with open(csv_file_path, mode='w', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow(['Item Name', 'Stock Quantity', 'PAR'])
+                # Write the header row
+                writer.writerow(['Item Name', 'Stock Quantity', 'PAR Difference'])
+                # Write the data rows
                 writer.writerows(submission_data)
+
             flash('Stock levels submitted and CSV generated successfully!', 'success')
-            return redirect(url_for('index'))
+            return redirect('/')
+
         except Exception as e:
             flash(f"An error occurred: {e}", 'danger')
             db.session.rollback()
+
     return render_template('index.html', items=items)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -136,10 +158,10 @@ def downloads():
 @app.route('/download/<filename>', methods=['GET'])
 @login_required
 def download_file(filename):
-    file_path = os.path.join(os.getcwd(), 'downloads', filename)
+    file_path = os.path.join('downloads', filename)
     if not os.path.exists(file_path):
         flash(f"File '{filename}' not found.", 'danger')
-        return redirect(url_for('downloads'))
+        return redirect('/downloads')
     return send_file(file_path, as_attachment=True)
 
 @app.route('/history', methods=['GET'])
